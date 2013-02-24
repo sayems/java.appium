@@ -1,0 +1,11 @@
+chromedriver.log
+.idea/workspace.xml
+
+.DS_Store
+
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear

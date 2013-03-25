@@ -1,0 +1,17 @@
+(1) Download the latest version of Appium from http://appium.io/
+    Click on "Download" link to download the latest version of appium.
+(2) Make sure you have the latest version of appium project on your Mac
+	It's on your home folder: ~/sayem/appium
+    If not, clone it by firing this command $git clone https://github.com/appium
+    or update appium project by firing this command $ git pull origin master
+
+(2) Now, Open Appium.app - It's on application folder!!
+(3) Enter IP Address: "127.0.0.1" in the first box and port "4723"
+(4) Now, you need to "choose" App Path [app that you want to test]
+    It should be on /Users/sayem/appium-app folder, choose one of the app.
+(4) Now, click Launch
+(5) Now, go to Window > Inspector from the top panel/menu bar and wait few minute..
+ 	Now if you just select one of the Element on left, you'll see the element box are  highlighted with red color.
+(6) You can run the test, you need to run it from IntelliJ IDEA > Run
+    If you don't have the appium script on mac, clone it from https://github.com/sayems/Appium.git
+    and then open it with IntelliJ Idea and then run it. Make sure you have appium.app is running before you run it.

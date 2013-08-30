@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
 
   <name>Appium</name>
-  <url>http://maven.apache.org</url>
+    <url>http://maven.apache.org</url>
     <description>General purpose test automation framework for Java. Based on Concordion and Selenium2</description>
 
     <licenses>
@@ -20,7 +20,8 @@
     </licenses>
 
     <properties>
-        <org.selenium-version>2.29.1</org.selenium-version>
+        <org.selenium-version>2.33.0</org.selenium-version>
+        <org.fitnesse-version>20130531</org.fitnesse-version>
         <jdk.version>1.7</jdk.version>
         <org.springframework-version>3.2.1.RELEASE</org.springframework-version>
         <resources.encoding>UTF-8</resources.encoding>
@@ -32,6 +33,16 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
             <version>${org.selenium-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fitnesse</groupId>
+            <artifactId>fitnesse</artifactId>
+            <version>${org.fitnesse-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.android.robotium</groupId>
+            <artifactId>robotium-solo</artifactId>
+            <version>3.6</version>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
@@ -62,13 +73,13 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.8</version>
+            <version>6.8.5</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
+            <version>4.11</version>
             <scope>test</scope>
         </dependency>
 

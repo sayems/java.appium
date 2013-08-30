@@ -1,4 +1,4 @@
-package com.sayem.appium;
+package com.sayem.appium.examples;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;

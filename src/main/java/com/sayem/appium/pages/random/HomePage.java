@@ -2,6 +2,7 @@ package com.sayem.appium.pages.random;
 
 import com.sayem.appium.pages.myexpert.MyExpertPage;
 import com.sayem.appium.pages.mygoal.MyGoalPage;
+import com.sayem.appium.pages.mymoney.MyMoneyPage;
 import com.sayem.appium.pages.myreads.MyReadsPage;
 import com.sayem.appium.pages.settings.SettingsPage;
 import org.openqa.selenium.WebDriver;

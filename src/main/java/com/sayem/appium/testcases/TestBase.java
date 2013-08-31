@@ -45,4 +45,9 @@ public class TestBase {
         driver = new RemoteWebDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
         driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
     }
+
+    public void quitDriver(){
+        driver.quit();
+        driver=null;
+    }
 }

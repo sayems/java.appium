@@ -2,9 +2,16 @@ package com.sayem.appium.testcases;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 public class TestBase {
     public static Logger APPLICATION_LOGS = null;
@@ -25,5 +32,17 @@ public class TestBase {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void initDriver() throws MalformedURLException {
+        // set up appium
+        File app = new File("/Users/ssayem/Dropbox/Appium/LearnVest/LearnVest.app");
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability(CapabilityType.BROWSER_NAME, "iOS");
+        capabilities.setCapability(CapabilityType.VERSION, "6.0");
+        capabilities.setCapability(CapabilityType.PLATFORM, "Mac");
+        capabilities.setCapability("app", app.getAbsolutePath());
+        driver = new RemoteWebDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+        driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
     }
 }

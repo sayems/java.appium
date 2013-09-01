@@ -43,4 +43,18 @@ public class AccountPage {
 
     @FindBy(xpath = "//window[2]/toolbar[1]/button[3]")
     private WebElement doneButton; // locate by name: Done
+
+    public void addAnAccount() throws InterruptedException {
+        accountPlusSign.click();
+        searchForAnAccount.sendKeys("DAGBANK");
+        Thread.sleep(1000L);
+        popUpAccountSearchName.click();
+        Thread.sleep(1000L);
+        userName.sendKeys("Money2.bank1");
+        doneButton.click();
+        password.sendKeys("bank1");
+        doneButton.click();
+        submitButton.click();
+
+    }
 }

@@ -3,6 +3,7 @@ package com.sayem.appium.pages.settings;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 
 public class SettingsPage {
 
@@ -30,4 +31,27 @@ public class SettingsPage {
 
     @FindBy(xpath = "//window[3]/alert[1]/button[2]")
     private WebElement alertBox;
+
+    public void passcode(){
+        passcodeButton.click();
+    }
+
+    public AccountPage accounts(){
+        accountsButton.click();
+        return PageFactory.initElements(driver, AccountPage.class);
+    }
+
+    public void helpAndSupport(){
+        helpAndSupportButton.click();
+    }
+
+    public void feedback(){
+        feedbackButton.click();
+    }
+
+    public void logout(){
+        logoutButton.click();
+        alertBox.click();
+
+    }
 }

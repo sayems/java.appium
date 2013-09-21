@@ -1,5 +1,7 @@
 package com.sayem.appium.testcases;
 
+import com.sayem.appium.pages.random.LandingPage;
+import com.sayem.appium.pages.random.SignupPage;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

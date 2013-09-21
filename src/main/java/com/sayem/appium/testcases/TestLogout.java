@@ -1,5 +1,6 @@
 package com.sayem.appium.testcases;
 
+import com.sayem.appium.pages.random.LandingPage;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -19,13 +20,7 @@ public class TestLogout extends TestBase{
         LandingPage landingPage = PageFactory.initElements(driver, LandingPage.class);
         landingPage.signUpAndLogin().login().loginIn(emailAddress,password)
                 .goToSettingsPage().logout();
-
-
-
-
-
-
     }
 }
 
-}
+

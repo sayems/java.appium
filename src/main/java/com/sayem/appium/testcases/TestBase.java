@@ -14,27 +14,29 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 public class TestBase {
-    public static Logger APPLICATION_LOGS = null;
-    public static Properties CONFIG=null;
-    public static WebDriver driver=null;
-    public static boolean isLoggedIn=false;
 
-    public void initConfigurations(){
-        if(CONFIG==null){
-            // Logging
-            APPLICATION_LOGS = Logger.getLogger("devpinoyLogger");
-            // config.prop
-            CONFIG = new Properties();
-            try {
-                FileInputStream fs = new FileInputStream("Appium/src/main/java/com/sayem/config/config.properties");
-                CONFIG.load(fs);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+	public static Logger APPLICATION_LOGS = null;
+	public static Properties CONFIG=null;
+	public static WebDriver driver=null;
+	public static boolean isLoggedIn=false;
 
-    public void initDriver() throws MalformedURLException {
+	
+	public void initConfigurations(){
+		if(CONFIG==null){
+		// Logging
+		APPLICATION_LOGS = Logger.getLogger("devpinoyLogger");
+		// config.prop
+		 CONFIG = new Properties();
+		try {
+			FileInputStream fs = new FileInputStream("Appium/src/main/java/com/sayem/config/config.properties");
+			CONFIG.load(fs);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+	
+	public void initDriver() throws MalformedURLException {
         // set up appium
         File app = new File("/Users/ssayem/Dropbox/Appium/LearnVest/LearnVest.app");
         DesiredCapabilities capabilities = new DesiredCapabilities();
@@ -44,10 +46,10 @@ public class TestBase {
         capabilities.setCapability("app", app.getAbsolutePath());
         driver = new RemoteWebDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
         driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
-    }
-
-    public void quitDriver(){
-        driver.quit();
-        driver=null;
-    }
+	}
+	
+	public void quitDriver(){
+		driver.quit();
+		driver=null;
+	}
 }

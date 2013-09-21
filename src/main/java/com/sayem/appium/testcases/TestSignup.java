@@ -1,14 +1,16 @@
 package com.sayem.appium.testcases;
 
-import com.sayem.appium.pages.random.LandingPage;
-import com.sayem.appium.pages.random.SignupPage;
+import com.sayem.appium.base.TestBase;
+import com.sayem.appium.pages.LandingPage;
+import com.sayem.appium.pages.SignupPage;
 import org.openqa.selenium.support.PageFactory;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Random;
 
-public class TestSignup extends TestBase{
+public class TestSignup extends TestBase {
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -25,5 +27,10 @@ public class TestSignup extends TestBase{
         LandingPage landingPage = PageFactory.initElements(driver, LandingPage.class);
         SignupPage signupPage = landingPage.signUpAndLogin();
         signupPage.signUp(emailAddress, "user1234", "Syed", "30");
+    }
+
+    @AfterMethod
+    public void tearDown(){
+        quitDriver();
     }
 }

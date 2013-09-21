@@ -1,11 +1,13 @@
 package com.sayem.appium.testcases;
 
-import com.sayem.appium.pages.random.LandingPage;
+import com.sayem.appium.base.TestBase;
+import com.sayem.appium.pages.LandingPage;
 import org.openqa.selenium.support.PageFactory;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class TestLogout extends TestBase{
+public class TestLogout extends TestBase {
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -20,6 +22,12 @@ public class TestLogout extends TestBase{
         LandingPage landingPage = PageFactory.initElements(driver, LandingPage.class);
         landingPage.signUpAndLogin().login().loginIn(emailAddress,password)
                 .goToSettingsPage().logout();
+    }
+
+
+    @AfterMethod
+    public void tearDown(){
+        quitDriver();
     }
 }
 

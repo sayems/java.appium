@@ -1,6 +1,6 @@
 package com.sayem.appium.pages.myexpert;
 
-import com.sayem.appium.pages.random.SignupPage;
+import com.sayem.appium.pages.SignupPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;

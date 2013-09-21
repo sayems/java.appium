@@ -50,7 +50,7 @@ public class TestApp {
         List<WebElement> elems = driver.findElements(By.tagName("textField"));
         Random random = new Random();
         for (WebElement elem : elems) {
-            int rndNum = random.nextInt(MAXIMUM - MINIMUM + 1) + MINIMUM;
+            int rndNum = random.nextInt(MAXIMUM + 1);
             elem.sendKeys(String.valueOf(rndNum));
             values.add(rndNum);
         }
@@ -68,6 +68,4 @@ public class TestApp {
         WebElement texts = driver.findElement(By.tagName("staticText"));
         assertEquals(texts.getText(), String.valueOf(values.get(0) + values.get(1)));
     }
-
-
 }

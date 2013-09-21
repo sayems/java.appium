@@ -1,4 +1,4 @@
-package com.sayem.appium.pages.random;
+package com.sayem.appium.pages;
 
 import com.sayem.appium.pages.myexpert.MyExpertPage;
 import com.sayem.appium.pages.mygoal.MyGoalPage;

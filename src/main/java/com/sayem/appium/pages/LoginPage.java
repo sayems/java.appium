@@ -1,4 +1,4 @@
-package com.sayem.appium.pages.random;
+package com.sayem.appium.pages;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;

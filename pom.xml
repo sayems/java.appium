@@ -20,7 +20,7 @@
     </licenses>
 
     <properties>
-        <org.selenium-version>2.33.0</org.selenium-version>
+        <org.selenium-version>2.35.0</org.selenium-version>
         <org.fitnesse-version>20130531</org.fitnesse-version>
         <jdk.version>1.7</jdk.version>
         <org.springframework-version>3.2.1.RELEASE</org.springframework-version>
@@ -74,13 +74,11 @@
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>6.8.5</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
-            <scope>test</scope>
         </dependency>
 
         <!-- Cucumber-JVM dependencies Start here -->
@@ -118,17 +116,6 @@
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
             <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.opera</groupId>
-            <artifactId>operadriver</artifactId>
-            <version>0.13</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.seleniumhq.selenium</groupId>
-                    <artifactId>selenium-remote-driver</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -340,44 +327,60 @@
     </dependencies>
 
     <build>
+        <!-- Source directory configuration -->
         <resources>
             <resource>
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
+
+        <!-- Following plugin excutes the testng tests -->
         <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.15</version>
+                    <configuration>
+                        <suiteXmlFiles>
+                            <suiteXmlFile>testng.xml</suiteXmlFile>
+                        </suiteXmlFiles>
+                    </configuration>
+                </plugin>
+                <!-- Compiler plugin configures the java version to be used for compiling the code -->
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
+                        <encoding>iso-8859-1</encoding>
                         <source>${jdk.version}</source>
                         <target>${jdk.version}</target>
                     </configuration>
-                    <version>3.0</version>
+                    <version>3.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>
     </build>
 
-    <profiles>
-        <profile>
-            <id>selenium-tests</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.12.4</version>
-                        <configuration>
-                            <includes>
-                                <include>**/*ST.java</include>
-                            </includes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+    <reporting>
+        <plugins>
+            <!-- TestNG-xslt related configuration. -->
+            <plugin>
+                <groupId>org.reportyng</groupId>
+                <artifactId>reporty-ng</artifactId>
+                <version>1.2</version>
+                <configuration>
+                    <!--Setting the output directory-->
+                    <outputDir>${project.basedir}/target/site/${project.artifactId}</outputDir>
+                    <!--Setting the testNgXslt.showRuntimeTotals flag-->
+                    <showRuntimeTotals>true</showRuntimeTotals>
+                    <!--Setting the testNgXslt.cssFile parameter. This should be relative to the '${basedir}/target/site/testng-xslt' directory-->
+                    <sortTestCaseLinks>true</sortTestCaseLinks>
+                    <testDetailsFilter>FAIL,PASS,SKIP,CONF</testDetailsFilter>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

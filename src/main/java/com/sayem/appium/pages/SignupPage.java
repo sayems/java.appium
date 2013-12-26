@@ -15,7 +15,7 @@ public class SignupPage {
     @FindBy(xpath = "//window[1]/scrollview[1]/button[2]")
     private WebElement loginButton;
 
-    @FindBy(xpath = "//window[1]/scrollview[1]/textfield[2]")
+    @FindBy(xpath = "//window[1]/scrollview[1]/textfield[1]")
     private WebElement emailAddress;
 
     @FindBy(xpath = "//window[1]/scrollview[1]/textfield[3]")

@@ -20,7 +20,7 @@
     </licenses>
 
     <properties>
-        <org.selenium-version>2.35.0</org.selenium-version>
+        <org.selenium-version>2.39.0</org.selenium-version>
         <org.fitnesse-version>20130531</org.fitnesse-version>
         <jdk.version>1.7</jdk.version>
         <org.springframework-version>3.2.1.RELEASE</org.springframework-version>
@@ -324,6 +324,16 @@
             <artifactId>apache-mime4j-core</artifactId>
             <version>0.7.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.uncommons</groupId>
+            <artifactId>reportng</artifactId>
+            <version>1.1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice-parent</artifactId>
+            <version>3.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -341,11 +351,20 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.15</version>
+                    <version>2.16</version>
                     <configuration>
                         <suiteXmlFiles>
                             <suiteXmlFile>testng.xml</suiteXmlFile>
                         </suiteXmlFiles>
+                        <!-- Setting properties for test execution -->
+                        <properties>
+                            <!-- Setting ReportNG listeners -->
+                            <property>
+                                <name>listener</name>
+                                <value>org.uncommons.reportng.HTMLReporter, org.uncommons.reportng.JUnitXMLReporter</value>
+                            </property>
+                        </properties>
+                        <workingDirectory>target/</workingDirectory>
                     </configuration>
                 </plugin>
                 <!-- Compiler plugin configures the java version to be used for compiling the code -->
@@ -363,24 +382,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
-    <reporting>
-        <plugins>
-            <!-- TestNG-xslt related configuration. -->
-            <plugin>
-                <groupId>org.reportyng</groupId>
-                <artifactId>reporty-ng</artifactId>
-                <version>1.2</version>
-                <configuration>
-                    <!--Setting the output directory-->
-                    <outputDir>${project.basedir}/target/site/${project.artifactId}</outputDir>
-                    <!--Setting the testNgXslt.showRuntimeTotals flag-->
-                    <showRuntimeTotals>true</showRuntimeTotals>
-                    <!--Setting the testNgXslt.cssFile parameter. This should be relative to the '${basedir}/target/site/testng-xslt' directory-->
-                    <sortTestCaseLinks>true</sortTestCaseLinks>
-                    <testDetailsFilter>FAIL,PASS,SKIP,CONF</testDetailsFilter>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
 </project>

@@ -46,8 +46,8 @@ public class XpathBuilder {
     private void getPageSource() {
         //This function will get the page source of whatever screen the user is on
         //This is called from the ScreenBase class
-       // JavascriptExecutor js = (JavascriptExecutor) appiumTestBase.getDriver();
-        //source = (String) js.executeScript("wd_frame.getPageSource()");
+        JavascriptExecutor js = (JavascriptExecutor) TestBase.getDriver();
+        source = (String) js.executeScript("wd_frame.getPageSource()");
     }
 
     private void CalculateLocations() {

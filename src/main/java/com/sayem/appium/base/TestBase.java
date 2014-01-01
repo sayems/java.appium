@@ -20,7 +20,10 @@ public abstract class TestBase {
 	public static WebDriver driver=null;
 	public static boolean isLoggedIn=false;
 
-	
+    public static WebDriver getDriver() {
+        return driver;
+    }
+
 	public void initConfigurations(){
 		if(CONFIG==null){
 		// Logging

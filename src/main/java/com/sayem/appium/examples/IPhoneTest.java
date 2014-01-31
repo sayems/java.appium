@@ -17,7 +17,7 @@ import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 
-public class TestApp {
+public class IPhoneTest {
 
     private WebDriver driver;
 
@@ -29,7 +29,7 @@ public class TestApp {
     @BeforeMethod
     public void setUp() throws Exception {
         // set up appium
-        File app = new File("/Users/sayem/appium-apps/TestApp.app");
+        File app = new File("/Users/sayem/appium-apps/IPhoneTest.app");
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability(CapabilityType.BROWSER_NAME, "iOS");
         capabilities.setCapability(CapabilityType.VERSION, "6.0");

@@ -3,6 +3,8 @@ package com.sayem.appium.examples;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -27,33 +29,23 @@ public class AndroidTest {
         capabilities.setCapability(CapabilityType.VERSION, "4.3");
         capabilities.setCapability(CapabilityType.PLATFORM, "Mac");
         //capabilities.setCapability("app", app.getAbsolutePath());
-        capabilities.setCapability("app-package", "com.android.calculator2"); // This is package name of your app (you can get it from apk info app)
-        capabilities.setCapability("app-activity", "com.android.calculator2.Calculator"); // This is Launcher activity of your app (you can get it from apk info app)
+        capabilities.setCapability("app-package", "com.facebook.katana"); // This is package name of your app (you can get it from apk info app)
+        capabilities.setCapability("app-activity", "com.facebook.katana.LoginActivity"); // This is Launcher activity of your app (you can get it from apk info app)
         //Create RemoteWebDriver instance and connect to the Appium server.
         //It will launch the Calculator App in Android Device using the configurations specified in Desired Capabilities
         driver = new RemoteWebDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+        driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
 
     }
     @Test
     public void testCal(){
-        //locate the Text on the calculator by using By.name()
-        WebElement two=driver.findElement(By.name("2"));
-        two.click();
-        WebElement plus=driver.findElement(By.name("+"));
-        plus.click();
-        WebElement four=driver.findElement(By.name("4"));
-        four.click();
-        WebElement equalTo=driver.findElement(By.name("="));
-        equalTo.click();
-        //locate the edit box of the calculator by using By.tagName()
-        WebElement results=driver.findElement(By.tagName("EditText"));
-        //Check the calculated value on the edit box
-        assert results.getText().equals("6"):"Actual value is : "+results.getText()+" did not match with expected value: 6";
-    }
+
+        driver.findElement(By.xpath("//linear[1]/window[1]/window[1]/relative[1]/linear[2]/textfield[1]")).sendKeys("sayem");
+     }
 
     @AfterClass
     public void teardown(){
         //close the app
-        driver.quit();
+        //driver.quit();
     }
 }

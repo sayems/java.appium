@@ -20,15 +20,26 @@
     </licenses>
 
     <properties>
-        <org.selenium-version>2.39.0</org.selenium-version>
-        <org.fitnesse-version>20130531</org.fitnesse-version>
+        <io.appium-version>1.6.2</io.appium-version>
+        <org.selenium-version>2.42.2</org.selenium-version>
+        <org.fitnesse-version>20140630</org.fitnesse-version>
         <jdk.version>1.7</jdk.version>
-        <org.springframework-version>3.2.1.RELEASE</org.springframework-version>
+        <org.springframework-version>4.0.6.RELEASE</org.springframework-version>
         <resources.encoding>UTF-8</resources.encoding>
         <sources.encoding>UTF-8</sources.encoding>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.appium</groupId>
+            <artifactId>java-client</artifactId>
+            <version>${io.appium-version}</version>
+        </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
@@ -42,7 +53,7 @@
         <dependency>
             <groupId>com.jayway.android.robotium</groupId>
             <artifactId>robotium-solo</artifactId>
-            <version>3.6</version>
+            <version>5.2.1</version>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
@@ -73,7 +84,7 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.8.5</version>
+            <version>6.8.8</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -85,23 +96,23 @@
         <dependency>
             <groupId>info.cukes</groupId>
             <artifactId>cucumber-junit</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.8</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.cukes</groupId>
             <artifactId>cucumber-java</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.8</version>
         </dependency>
         <dependency>
             <groupId>info.cukes</groupId>
             <artifactId>cucumber-html</artifactId>
-            <version>0.2.2</version>
+            <version>0.2.3</version>
         </dependency>
         <dependency>
             <groupId>info.cukes</groupId>
             <artifactId>cucumber-picocontainer</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.8</version>
             <scope>test</scope>
         </dependency>
         <!-- Cucumber-JVM dependencies end here-->
@@ -130,7 +141,7 @@
         <dependency>
             <groupId>biz.neustar</groupId>
             <artifactId>browsermob-proxy</artifactId>
-            <version>2.0-beta-6</version>
+            <version>2.0-beta-7</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.seleniumhq.selenium</groupId>
@@ -151,7 +162,7 @@
         <dependency>
             <groupId>com.opera</groupId>
             <artifactId>operadriver</artifactId>
-            <version>1.1</version>
+            <version>1.5</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.seleniumhq.selenium</groupId>
@@ -255,9 +266,9 @@
             <version>1.2.0</version>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.0.2</version>
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>
@@ -272,17 +283,17 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>3.8</version>
+            <version>3.10-FINAL</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.9</version>
+            <version>3.10-FINAL</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml-schemas</artifactId>
-            <version>3.8</version>
+            <version>3.10-FINAL</version>
         </dependency>
         <dependency>
             <groupId>com.google.protobuf</groupId>
@@ -337,49 +348,142 @@
     </dependencies>
 
     <build>
-        <!-- Source directory configuration -->
-        <resources>
-            <resource>
-                <directory>src/test/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.16</version>
+                <configuration>
+                    <basedir>/src/main/java/com/sayem/pom/script</basedir>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${basedir}/src/main/resources/testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <properties>
+                        <property>
+                            <name>usedefaultlisteners</name>
+                            <value>false</value>
+                        </property>
 
-        <!-- Following plugin excutes the testng tests -->
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.16</version>
-                    <configuration>
-                        <suiteXmlFiles>
-                            <suiteXmlFile>testng.xml</suiteXmlFile>
-                        </suiteXmlFiles>
-                        <!-- Setting properties for test execution -->
-                        <properties>
-                            <!-- Setting ReportNG listeners -->
-                            <property>
-                                <name>listener</name>
-                                <value>org.uncommons.reportng.HTMLReporter, org.uncommons.reportng.JUnitXMLReporter</value>
-                            </property>
-                        </properties>
-                        <workingDirectory>target/</workingDirectory>
-                    </configuration>
-                </plugin>
-                <!-- Compiler plugin configures the java version to be used for compiling the code -->
+                        <!-- Setting ReportNG listeners -->
+                        <property>
+                            <name>listener</name>
+                            <value>org.uncommons.reportng.HTMLReporter, org.uncommons.reportng.JUnitXMLReporter</value>
+                        </property>
+                    </properties>
+                    <reportsDirectory>${test.report.path}/${timestamp-with-seconds}</reportsDirectory>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-report-template-timestamped</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <overwrite>true</overwrite>
+                            <outputDirectory>${test.report.path}/${timestamp-with-seconds}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/src/main/resources/report-template</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-report-template-current</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <overwrite>true</overwrite>
+                            <outputDirectory>${test.report.path}/current</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/src/main/resources/report-template</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-screenshot-timestamped</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <overwrite>true</overwrite>
+                            <outputDirectory>${test.report.path}/${timestamp-with-seconds}/screenshots</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/target/screenshots</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-screenshot-current</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <overwrite>true</overwrite>
+                            <outputDirectory>${test.report.path}/current/screenshots</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/target/screenshots</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.keyboardsamurais.maven</groupId>
+                <artifactId>maven-timestamp-plugin</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <propertyName>timestamp-with-seconds</propertyName>
+                    <timestampPattern>yyyy.dd.MM HH.mm.ss</timestampPattern>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <encoding>iso-8859-1</encoding>
-                        <source>${jdk.version}</source>
-                        <target>${jdk.version}</target>
-                    </configuration>
-                    <version>3.1</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+            <!-- Compiler plugin configures the java version to be used for compiling the code -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
+                    <fork>true</fork>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 </project>

@@ -5,7 +5,11 @@
   <groupId>com.sayem.appium</groupId>
   <artifactId>Appium</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+    <modules>
+        <module>IPhone</module>
+        <module>Android</module>
+    </modules>
+    <packaging>pom</packaging>
 
   <name>Appium</name>
     <url>http://maven.apache.org</url>

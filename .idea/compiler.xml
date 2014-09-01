@@ -22,11 +22,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="Appium" />
+        <module name="Android" />
+        <module name="IPhone" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="Android" target="1.7" />
       <module name="Appium" target="1.7" />
+      <module name="IPhone" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Android/Android.iml" filepath="$PROJECT_DIR$/Android/Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/Appium.iml" filepath="$PROJECT_DIR$/Appium.iml" />
+      <module fileurl="file://$PROJECT_DIR$/IPhone/IPhone.iml" filepath="$PROJECT_DIR$/IPhone/IPhone.iml" />
     </modules>
   </component>
 </project>

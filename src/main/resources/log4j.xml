@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration debug="false" xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="fileAppender" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="selenium.log"/>
+        <param name="DatePattern" value=".yyyy-MM-dd" />
+        <!--<param name="MaxFileSize" value="1000000KB"/>
+        <param name="MaxBackupIndex" value="10"/>  -->
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{dd MMM yyyy HH:mm:ss} %-5p %-5p %c{1} %x - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.out"/>
+        <!-- only warn above log will show up on console. all goes to the file-->
+        <param name="Threshold" value="INFO"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{MMM dd yyyy HH:mm:ss} %-5p %c{1} %x - %m%n"/>
+        </layout>
+    </appender>
+
+    <root>
+        <level value="INFO" />
+        <appender-ref ref="stdout" />
+        <appender-ref ref="fileAppender" />
+    </root>
+</log4j:configuration>

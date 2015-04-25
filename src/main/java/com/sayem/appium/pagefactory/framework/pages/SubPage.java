@@ -4,14 +4,14 @@ import org.openqa.selenium.By;
 
 public interface SubPage extends Page {
     /**
-     * Set parent page for the subpages.
-     */
-    void setParent(Page parent);
-
-    /**
      * get parent page from the subpages.
      */
     Page getParent();
+
+    /**
+     * Set parent page for the subpages.
+     */
+    void setParent(Page parent);
 
     boolean hasParent();
 

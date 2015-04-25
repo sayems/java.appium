@@ -1,18 +1,18 @@
 package com.sayem.appium.pagefactory.framework.browser.web;
 
-import com.google.common.base.Optional;
 import com.sayem.appium.pagefactory.framework.actions.InternetExplorerActions;
 import com.sayem.appium.pagefactory.framework.config.TimeoutsConfig;
-import com.sayem.appium.pagefactory.framework.exception.WebDriverException;
+import com.sayem.appium.pagefactory.framework.exception.IWebDriverException;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerDriverLogLevel;
 import org.openqa.selenium.logging.LogEntries;
-import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.logging.Level;
 
 public class InternetExplorerBrowser extends WebBrowser {
@@ -25,39 +25,9 @@ public class InternetExplorerBrowser extends WebBrowser {
                                    Optional<Integer> startWindowWidth,
                                    Optional<Integer> startWindowHeight,
                                    Optional<Level> browserLogLevel,
-                                   Optional<String> browserLogFile) {
-        super(baseTestUrl, timeouts, driverPath, browserBinaryPath, browserVersion, browserLocale, startWindowWidth, startWindowHeight, browserLogLevel, browserLogFile);
-    }
-
-    @Override
-    public WebBrowserType getBrowserType() {
-        return WebBrowserType.IE;
-    }
-
-    @Override
-    public DesiredCapabilities getDesiredCapabilities() {
-        DesiredCapabilities desiredCapabilities = DesiredCapabilities.internetExplorer();
-        desiredCapabilities.setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
-        desiredCapabilities.setCapability(InternetExplorerDriver.NATIVE_EVENTS, true);
-        desiredCapabilities.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
-
-        Optional<String> version = getBrowserVersion();
-        if (version.isPresent() && !version.get().isEmpty()) {
-            desiredCapabilities.setCapability(CapabilityType.VERSION, version.get());
-        }
-
-        Level logLevel = getLogLevel();
-        desiredCapabilities.setCapability(InternetExplorerDriver.LOG_LEVEL, convertJavaLogLevelToIeLogLevel(logLevel.toString()));
-
-        Optional<String> browserLogFile = getBrowserLogFile();
-        if (browserLogFile.isPresent() && !browserLogFile.get().isEmpty()) {
-            desiredCapabilities.setCapability(InternetExplorerDriver.LOG_FILE, browserLogFile.get());
-        }
-
-        LoggingPreferences loggingPreferences = getLoggingPreferences();
-        desiredCapabilities.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences);
-
-        return desiredCapabilities;
+                                   Optional<String> browserLogFile,
+                                   Optional<Platform> platform) {
+        super(baseTestUrl, timeouts, driverPath, browserBinaryPath, browserVersion, browserLocale, startWindowWidth, startWindowHeight, browserLogLevel, browserLogFile, platform);
     }
 
     private static String convertJavaLogLevelToIeLogLevel(String javaLogLevel) {
@@ -88,12 +58,38 @@ public class InternetExplorerBrowser extends WebBrowser {
     }
 
     @Override
+    public WebBrowserType getBrowserType() {
+        return WebBrowserType.IE;
+    }
+
+    @Override
+    public DesiredCapabilities getDesiredCapabilities() {
+        DesiredCapabilities desiredCapabilities = DesiredCapabilities.internetExplorer();
+
+        setCommonWebBrowserCapabilities(desiredCapabilities);
+
+        desiredCapabilities.setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
+        desiredCapabilities.setCapability(InternetExplorerDriver.NATIVE_EVENTS, true);
+        desiredCapabilities.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
+
+        Level logLevel = getLogLevel();
+        desiredCapabilities.setCapability(InternetExplorerDriver.LOG_LEVEL, convertJavaLogLevelToIeLogLevel(logLevel.toString()));
+
+        Optional<String> browserLogFile = getBrowserLogFile();
+        if (browserLogFile.isPresent() && !browserLogFile.get().isEmpty()) {
+            desiredCapabilities.setCapability(InternetExplorerDriver.LOG_FILE, browserLogFile.get());
+        }
+
+        return desiredCapabilities;
+    }
+
+    @Override
     public InternetExplorerActions getActions() {
         return new InternetExplorerActions(this);
     }
 
     @Override
-    protected WebDriver createWebDriver() throws WebDriverException {
+    protected WebDriver createWebDriver() throws IWebDriverException {
         return new InternetExplorerDriver(getDesiredCapabilities());
     }
 

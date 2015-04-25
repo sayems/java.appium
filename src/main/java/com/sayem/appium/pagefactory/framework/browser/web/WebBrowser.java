@@ -1,24 +1,25 @@
 package com.sayem.appium.pagefactory.framework.browser.web;
 
-import com.google.common.base.Optional;
 import com.sayem.appium.pagefactory.framework.browser.Browser;
 import com.sayem.appium.pagefactory.framework.config.TimeoutsConfig;
-import com.sayem.appium.pagefactory.framework.exception.WebDriverException;
+import com.sayem.appium.pagefactory.framework.exception.IWebDriverException;
 import com.sayem.appium.pagefactory.framework.pages.BaseTopLevelPage;
 import com.sayem.appium.pagefactory.framework.pages.TopLevelPage;
 import com.sayem.appium.pagefactory.framework.webservice.EndpointBuilder;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -38,6 +39,7 @@ public abstract class WebBrowser extends Browser<WebDriver> {
     private final Optional<Integer> startWindowHeight;
     private final Optional<Level> browserLogLevel;
     private final Optional<String> browserLogFile;
+    private final Optional<Platform> platform;
 
     public WebBrowser(String baseTestUrl,
                       TimeoutsConfig timeouts,
@@ -46,11 +48,12 @@ public abstract class WebBrowser extends Browser<WebDriver> {
                       Optional<String> browserVersion,
                       Optional<String> browserLocale,
                       Optional<Integer> startWindowWidth,
-                      Optional<Integer> startWindowHeight) {
+                      Optional<Integer> startWindowHeight,
+                      Optional<Platform> platform) {
 
         this(baseTestUrl, timeouts, webDriverPath, browserBinaryPath, browserVersion, browserLocale,
                 startWindowWidth, startWindowHeight,
-                Optional.<Level>absent(), Optional.<String>absent());
+                Optional.empty(), Optional.empty(), platform);
 
     }
 
@@ -63,7 +66,8 @@ public abstract class WebBrowser extends Browser<WebDriver> {
                       Optional<Integer> startWindowWidth,
                       Optional<Integer> startWindowHeight,
                       Optional<Level> browserLogLevel,
-                      Optional<String> browserLogFile) {
+                      Optional<String> browserLogFile,
+                      Optional<Platform> platform) {
         super(baseTestUrl, timeouts);
         this.webDriverPath = webDriverPath;
         this.browserBinaryPath = browserBinaryPath;
@@ -73,21 +77,26 @@ public abstract class WebBrowser extends Browser<WebDriver> {
         this.startWindowHeight = startWindowHeight;
         this.browserLogLevel = browserLogLevel;
         this.browserLogFile = browserLogFile;
+        this.platform = platform;
     }
 
     /**
      * Initialize the browser. This creates a web driver instance, which opens the Browser to a blank page.
      * Resize the window to the configured values.
      *
-     * @throws com.sayem.appium.pagefactory.framework.exception.WebDriverException
+     * @throws IWebDriverException
      */
-    public void initializeBrowser() throws WebDriverException {
+    public void initializeBrowser() throws IWebDriverException {
         this.webDriver = createWebDriver();
         if (startWindowWidth.isPresent() && startWindowHeight.isPresent()) {
             this.webDriver.manage().window().setSize(new Dimension(startWindowWidth.get(), startWindowHeight.get()));
         }
-        this.webDriver.manage().timeouts().pageLoadTimeout(getPageTimeoutSeconds(), TimeUnit.SECONDS);
-        this.webDriver.manage().timeouts().implicitlyWait(getImplicitWaitTimeoutMillis(), TimeUnit.MILLISECONDS);
+        // Safari web driver doesn't support setting timeouts.
+        if (getBrowserType() != WebBrowserType.SAFARI) {
+            this.webDriver.manage().timeouts().pageLoadTimeout(getPageTimeoutSeconds(), TimeUnit.SECONDS);
+            this.webDriver.manage().timeouts().implicitlyWait(getImplicitWaitTimeoutMillis(), TimeUnit.MILLISECONDS);
+        }
+        logger.info("SUCCESS - Created WebBrowser of type {}: {}", getBrowserType(), webDriver);
     }
 
     public abstract WebBrowserType getBrowserType();
@@ -140,6 +149,10 @@ public abstract class WebBrowser extends Browser<WebDriver> {
         return browserLogFile;
     }
 
+    public Optional<Platform> getPlatform() {
+        return platform;
+    }
+
     public TimeoutsConfig getTimeouts() {
         return timeouts;
     }
@@ -148,7 +161,7 @@ public abstract class WebBrowser extends Browser<WebDriver> {
      * Opens a new page in the Browser by URL. An absolute URL or the path can be provided.
      * If a path is provided, then the baseTestUrl provided when creating the browser will be used as the
      * base of the URL.
-     *
+     * <p>
      * Invalidates the cached page and loads a fresh new page.
      *
      * @param href - the href from a link, which may be a relative path from baseTestUrl or may be absolute
@@ -157,26 +170,25 @@ public abstract class WebBrowser extends Browser<WebDriver> {
      * {@link com.sayem.appium.pagefactory.framework.pages.BaseTopLevelPage} and then
      * call {@link #openPageByURL(String, Class)}.
      */
-    public TopLevelPage openPageByURL(String href) throws URISyntaxException {
+    public TopLevelPage openPageByURL(String href) {
         return openPageByURL(href, BaseTopLevelPage.class);
     }
 
     /**
      * Opens a new page in the Browser by URL. An absolute URL or the path can be provided.
-     *
+     * <p>
      * Invalidates the cached page and loads a fresh new page.
      *
-     * @param href - the href from a link, which may be a relative path from baseTestUrl or may be absolute
+     * @param uri       - the href from a link, which may be a relative path from baseTestUrl or may be absolute
      * @param pageClass - the {@link com.sayem.appium.pagefactory.framework.pages.TopLevelPage} class to load.
      */
-    public <T extends TopLevelPage> T openPageByURL(String href, Class<T> pageClass) throws URISyntaxException {
-        URI uri = new URI(href);
+    public <T extends TopLevelPage> T openPageByURL(URI uri, Class<T> pageClass) {
         URI absoluteURI;
         if (uri.isAbsolute()) {
             absoluteURI = uri;
         } else {
-            String fullURIStr = EndpointBuilder.uri(baseTestUrl, "/", href);
-            absoluteURI = new URI(fullURIStr);
+            String fullURIStr = EndpointBuilder.uri(baseTestUrl, "/", uri.toString());
+            absoluteURI = URI.create(fullURIStr);
         }
         logger.info("Opening web page by URL {}", absoluteURI);
         runLeavePageHook();
@@ -184,6 +196,19 @@ public abstract class WebBrowser extends Browser<WebDriver> {
         T page = PAGE_UTILS.loadPageFromURL(absoluteURI, pageClass, getWebDriver(), getActions());
         setCachedPage(page);
         return page;
+    }
+
+    /**
+     * Opens a new page in the Browser by URL. An absolute URL or the path can be provided.
+     * <p>
+     * Invalidates the cached page and loads a fresh new page.
+     *
+     * @param href      - the href from a link, which may be a relative path from baseTestUrl or may be absolute
+     * @param pageClass - the {@link com.sayem.appium.pagefactory.framework.pages.TopLevelPage} class to load.
+     */
+    public <T extends TopLevelPage> T openPageByURL(String href, Class<T> pageClass) {
+        URI uri = URI.create(href);
+        return openPageByURL(uri, pageClass);
     }
 
     /**
@@ -216,4 +241,27 @@ public abstract class WebBrowser extends Browser<WebDriver> {
 
     @Nullable
     public abstract LogEntries getBrowserLogEntries();
+
+    /**
+     * Helper to set properties of the DesiredCapabilities that are common across all browsers.
+     *
+     * @param desiredCapabilities
+     */
+    protected void setCommonWebBrowserCapabilities(DesiredCapabilities desiredCapabilities) {
+        // If a required version is present, then set this as a desired capability. Only affects Remote browsers.
+        Optional<String> browserVersion = getBrowserVersion();
+        if (browserVersion.isPresent() && !browserVersion.get().isEmpty()) {
+            desiredCapabilities.setCapability(CapabilityType.VERSION, browserVersion.get());
+        }
+
+        // Set logging preferences.
+        LoggingPreferences loggingPreferences = getLoggingPreferences();
+        desiredCapabilities.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences);
+
+        // If a platform is specified, set this desired capability. Only affects Remote browsers.
+        Optional<Platform> platform = getPlatform();
+        if (platform.isPresent()) {
+            desiredCapabilities.setPlatform(platform.get());
+        }
+    }
 }

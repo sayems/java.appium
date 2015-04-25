@@ -1,33 +1,29 @@
 package com.sayem.appium.pagefactory.framework.browser.web;
 
-import com.google.common.collect.Maps;
-import com.sayem.appium.pagefactory.framework.actions.ChromeSeleniumActions;
+import com.sayem.appium.pagefactory.framework.actions.SafariSeleniumActions;
 import com.sayem.appium.pagefactory.framework.config.TimeoutsConfig;
 import com.sayem.appium.pagefactory.framework.exception.IWebDriverException;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.safari.SafariOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 
-public class ChromeBrowser extends WebBrowser {
-    private static final Logger logger = LoggerFactory.getLogger(ChromeBrowser.class);
+public class SafariBrowser extends WebBrowser {
+    private static final Logger logger = LoggerFactory.getLogger(SafariBrowser.class);
 
-    public ChromeBrowser(String baseTestUrl,
+    public SafariBrowser(String baseTestUrl,
                          TimeoutsConfig timeouts,
                          Optional<String> driverPath,
                          Optional<String> browserBinaryPath,
@@ -45,7 +41,7 @@ public class ChromeBrowser extends WebBrowser {
 
     @Override
     public WebBrowserType getBrowserType() {
-        return WebBrowserType.CHROME;
+        return WebBrowserType.SAFARI;
     }
 
     @Override
@@ -59,68 +55,29 @@ public class ChromeBrowser extends WebBrowser {
 
     @Override
     public DesiredCapabilities getDesiredCapabilities() {
-        DesiredCapabilities desiredCapabilities = DesiredCapabilities.chrome();
+        DesiredCapabilities desiredCapabilities = DesiredCapabilities.safari();
 
         setCommonWebBrowserCapabilities(desiredCapabilities);
 
         desiredCapabilities.setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
 
-        // If the locale option is present and is not empty, then set this option in Chromedriver
-        Optional<String> browserLocale = getBrowserLocale();
-        if (browserLocale.isPresent() && !browserLocale.get().isEmpty()) {
-            Map<String, String> chromePrefs = Maps.newHashMap();
-            chromePrefs.put("intl.accept_languages", browserLocale.get());
-            desiredCapabilities.setCapability("chrome.prefs", chromePrefs);
-        }
+        SafariOptions safariOptions = new SafariOptions();
+        safariOptions.setUseCleanSession(true);
 
-        // If the browser binary path is present and not empty, then set this as the Chrome Binary file
-        Optional<String> browserBinaryPath = getBrowserBinaryPath();
-        if (browserBinaryPath.isPresent() && !browserBinaryPath.get().isEmpty()) {
-            desiredCapabilities.setCapability("chrome.binary", browserBinaryPath.get());
-        }
-
-        // ChromeOptions
-        //ChromeOptions options = new ChromeOptions();
-
-        // This tells Chromedriver we're running tests.
-        // This eliminates the banner with the message "You are using an unsupported command-line flag --ignore-certificate-errors"
-        //options.addArguments("test-type");
-
-        //desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, options);
+        desiredCapabilities.setCapability(SafariOptions.CAPABILITY, safariOptions);
 
         return desiredCapabilities;
     }
 
     @Override
-    public ChromeSeleniumActions getActions() {
-        return new ChromeSeleniumActions(this);
+    public SafariSeleniumActions getActions() {
+        return new SafariSeleniumActions(this);
     }
 
     @Override
     protected WebDriver createWebDriver() throws IWebDriverException {
-        Optional<String> driverPath = getWebDriverPath();
-        Optional<String> browserLogFile = getBrowserLogFile();
 
-        ChromeDriverService.Builder builder = new ChromeDriverService.Builder()
-                .usingAnyFreePort();
-
-        if (driverPath.isPresent() && !driverPath.get().isEmpty()) {
-            File chromedriverFile = new File(driverPath.get());
-            builder.usingDriverExecutable(chromedriverFile);
-        }
-
-        if (browserLogFile.isPresent() && !browserLogFile.get().isEmpty()) {
-            builder.withLogFile(new File(browserLogFile.get()));
-        }
-
-        ChromeDriverService service = builder.build();
-
-        try {
-            service.start();
-        } catch (IOException e) {
-            throw new IWebDriverException("Error starting Chrome driver service", e);
-        }
-        return new ChromeDriver(service, getDesiredCapabilities());
+        return new SafariDriver(getDesiredCapabilities());
     }
 
     @Nullable

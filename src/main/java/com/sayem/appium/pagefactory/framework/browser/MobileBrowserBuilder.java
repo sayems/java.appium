@@ -7,25 +7,23 @@ import com.sayem.appium.pagefactory.framework.browser.mobile.IOSMobileBrowser;
 import com.sayem.appium.pagefactory.framework.browser.mobile.MobileBrowser;
 import com.sayem.appium.pagefactory.framework.browser.mobile.MobilePlatformName;
 import com.sayem.appium.pagefactory.framework.config.TimeoutsConfig;
-import com.sayem.appium.pagefactory.framework.exception.WebDriverException;
+import com.sayem.appium.pagefactory.framework.exception.IWebDriverException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * <p>Builder class for creating an App that is running on an emulator or a connected device that connected
- *    to the same host as the test code.
- *    Creates either a {@link com.sayem.appium.pagefactory.framework.browser.mobile.AndroidMobileBrowser},
- *    {@link com.sayem.appium.pagefactory.framework.browser.mobile.IOSMobileBrowser}..</p>
- *
- *  <p>A Browser is basically a wrapper for a WebDriver that greatly simplifies configuration,
- *  adds useful utilities, and has methods
- *  for loading {@link com.sayem.appium.pagefactory.framework.pages.Page}'s.
- *
- *  Pages provide an object-oriented solution to Selenium testing. You can write Page classes that model a web page
- *  in the web app you are testing.</p>
+ * to the same host as the test code.
+ * Creates either a {@link com.sayem.appium.pagefactory.framework.browser.mobile.AndroidMobileBrowser},
+ * {@link com.sayem.appium.pagefactory.framework.browser.mobile.IOSMobileBrowser}..</p>
+ * <p>
+ * <p>A Browser is basically a wrapper for a WebDriver that greatly simplifies configuration,
+ * adds useful utilities, and has methods
+ * for loading {@link com.sayem.appium.pagefactory.framework.pages.Page}'s.
+ * <p>
+ * Pages provide an object-oriented solution to Selenium testing. You can write Page classes that model a web page
+ * in the web app you are testing.</p>
  */
-
 public class MobileBrowserBuilder {
     private static final Logger logger = LoggerFactory.getLogger(MobileBrowserBuilder.class);
 
@@ -34,10 +32,16 @@ public class MobileBrowserBuilder {
     private String browserName;
     private MobilePlatformName platformName;
     private String platformVersion;
+    private String platform;
     private String deviceName;
     private String app;
     private String appPackage;
     private String appActivity;
+    private String newCommandTimeout;
+    private String automationName;
+    private String version;
+    private String autoLaunch;
+    private boolean touchMode;
 
 
     private MobileBrowserBuilder(String baseTestUrl,
@@ -46,6 +50,24 @@ public class MobileBrowserBuilder {
         this.timeoutsConfig = TimeoutsConfig.defaultTimeoutsConfig();
         this.platformName = Preconditions.checkNotNull(platformName, "You must provide a non-null platformName!");
 
+    }
+
+    /**
+     * Get a MobileBrowserBuilder for Android and base URL for the webapp you are testing against.
+     *
+     * @param baseTestUrl - base URL for your webapp, e.g. http://my.site.com/base
+     */
+    public static MobileBrowserBuilder getAndroidBuilder(String baseTestUrl) {
+        return new MobileBrowserBuilder(baseTestUrl, MobilePlatformName.ANDROID);
+    }
+
+    /**
+     * Get a MobileBrowserBuilder for iOS and base URL for the webapp you are testing against.
+     *
+     * @param baseTestUrl - base URL for your webapp, e.g. http://my.site.com/base
+     */
+    public static MobileBrowserBuilder getIOSBuilder(String baseTestUrl) {
+        return new MobileBrowserBuilder(baseTestUrl, MobilePlatformName.IOS);
     }
 
     //------------Getters in case the client wants to inspect the config they have so far-----------
@@ -69,6 +91,26 @@ public class MobileBrowserBuilder {
         return platformVersion;
     }
 
+    public String getPlatform() {
+        return platform;
+    }
+
+    public String getNewCommandTimeout() {
+        return newCommandTimeout;
+    }
+
+    public String getAutomationName() {
+        return automationName;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getAutoLaunch() {
+        return autoLaunch;
+    }
+
     public String getDeviceName() {
         return deviceName;
     }
@@ -85,48 +127,42 @@ public class MobileBrowserBuilder {
         return appActivity;
     }
 
-
-    /**
-     * Get a MobileBrowserBuilder for Android and base URL for the webapp you are testing against.
-     * @param baseTestUrl - base URL for your webapp, e.g. http://my.site.com/base
-     */
-    public static MobileBrowserBuilder getAndroidBuilder(String baseTestUrl) {
-        return new MobileBrowserBuilder(baseTestUrl, MobilePlatformName.ANDROID);
+    public boolean isTouchMode() {
+        return touchMode;
     }
-
-    /**
-     * Get a MobileBrowserBuilder for iOS and base URL for the webapp you are testing against.
-     * @param baseTestUrl - base URL for your webapp, e.g. http://my.site.com/base
-     */
-    public static MobileBrowserBuilder getIOSBuilder(String baseTestUrl) {
-        return new MobileBrowserBuilder(baseTestUrl, MobilePlatformName.IOS);
-    }
-
 
     /**
      * Creates the MobileBrowser instance, which includes creating the actual Browser process via the underlying Appium
      * Server
+     *
      * @return - a {@link com.sayem.appium.pagefactory.framework.browser.mobile.AndroidMobileBrowser},
      * {@link com.sayem.appium.pagefactory.framework.browser.mobile.IOSMobileBrowser}
-     * @throws com.sayem.appium.pagefactory.framework.exception.WebDriverException
+     * @throws IWebDriverException when something goes wrong with creating a new WebDriver
      */
-    public MobileBrowser build() throws WebDriverException {
+    public MobileBrowser build() throws IWebDriverException {
         logger.info("Building Mobile Browser with the following config: \n{}", toString());
         MobileBrowser browser;
         switch (platformName) {
             case ANDROID:
-                browser = new AndroidMobileBrowser(baseTestUrl, browserName, platformName.getPlatformName(), platformVersion,
-                        deviceName, app, appPackage, appActivity, timeoutsConfig);
+                browser = new AndroidMobileBrowser(baseTestUrl, browserName, platform, platformName.getPlatformName(),
+                        platformVersion, deviceName, newCommandTimeout, automationName, version, autoLaunch,
+                        app, appPackage, appActivity, timeoutsConfig, touchMode);
                 break;
             case IOS:
-                browser = new IOSMobileBrowser(baseTestUrl, browserName, platformName.getPlatformName(), platformVersion,
-                        deviceName, app, timeoutsConfig);
+                browser = new IOSMobileBrowser(baseTestUrl, browserName, platform, platformName.getPlatformName(),
+                        platformVersion, deviceName, newCommandTimeout, automationName, version, autoLaunch,
+                        app, timeoutsConfig);
                 break;
             default:
                 throw new IllegalArgumentException("Only IOS and Android are currently supported!");
         }
         browser.initializeBrowser();
         return browser;
+    }
+
+    public MobileBrowserBuilder withTouchMode(boolean touchMode) {
+        this.touchMode = touchMode;
+        return this;
     }
 
     public MobileBrowserBuilder withTimeoutsConfig(TimeoutsConfig timeoutsConfig) {
@@ -169,6 +205,30 @@ public class MobileBrowserBuilder {
         return this;
     }
 
+    public MobileBrowserBuilder withNewCommandTimeout(String newCommandTimeout) {
+        this.newCommandTimeout = newCommandTimeout;
+        return this;
+    }
+
+    public MobileBrowserBuilder withAutomationName(String automationName) {
+        this.automationName = automationName;
+        return this;
+    }
+
+    public MobileBrowserBuilder withVersion(String version) {
+        this.version = version;
+        return this;
+    }
+
+    public MobileBrowserBuilder withAutoLaunch(String autoLaunch) {
+        this.autoLaunch = autoLaunch;
+        return this;
+    }
+
+    public MobileBrowserBuilder withPlatform(String platform) {
+        this.platform = platform;
+        return this;
+    }
 
     @Override
     public String toString() {
@@ -176,11 +236,16 @@ public class MobileBrowserBuilder {
                 .add("baseTestUrl", baseTestUrl)
                 .add("browserName", browserName)
                 .add("platformName", platformName.getPlatformName())
+                .add("platform", platform)
                 .add("platformVersion", platformVersion)
                 .add("deviceName", deviceName)
                 .add("app", app)
                 .add("appPackage", appPackage)
                 .add("appActivity", appActivity)
+                .add("newCommandTimeout", newCommandTimeout)
+                .add("automationName", automationName)
+                .add("version", version)
+                .add("autoLaunch", autoLaunch)
                 .toString();
     }
 }

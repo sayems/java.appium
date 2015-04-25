@@ -1,15 +1,14 @@
 package com.sayem.appium.pagefactory.framework.browser.web;
 
-import com.google.common.base.Optional;
 import com.sayem.appium.pagefactory.framework.actions.FirefoxSeleniumActions;
 import com.sayem.appium.pagefactory.framework.config.TimeoutsConfig;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
@@ -17,9 +16,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.util.Optional;
 import java.util.Set;
 
 public class FirefoxBrowser extends WebBrowser {
+
+    private static final Logger logger = LoggerFactory.getLogger(FirefoxBrowser.class);
 
     public FirefoxBrowser(String baseTestUrl,
                           TimeoutsConfig timeoutsConfig,
@@ -28,13 +30,11 @@ public class FirefoxBrowser extends WebBrowser {
                           Optional<String> browserVersion,
                           Optional<String> browserLocale,
                           Optional<Integer> startWindowWidth,
-                          Optional<Integer> startWindowHeight) {
+                          Optional<Integer> startWindowHeight,
+                          Optional<Platform> platform) {
 
-        super(baseTestUrl, timeoutsConfig, webDriverPath, browserBinaryPath, browserVersion, browserLocale, startWindowWidth, startWindowHeight);
+        super(baseTestUrl, timeoutsConfig, webDriverPath, browserBinaryPath, browserVersion, browserLocale, startWindowWidth, startWindowHeight, platform);
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(FirefoxBrowser.class);
-
 
     @Override
     public WebBrowserType getBrowserType() {
@@ -44,6 +44,9 @@ public class FirefoxBrowser extends WebBrowser {
     @Override
     public DesiredCapabilities getDesiredCapabilities() {
         DesiredCapabilities desiredCapabilities = DesiredCapabilities.firefox();
+
+        setCommonWebBrowserCapabilities(desiredCapabilities);
+
         desiredCapabilities.setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
 
         FirefoxProfile profile = new FirefoxProfile();
@@ -59,16 +62,6 @@ public class FirefoxBrowser extends WebBrowser {
                 desiredCapabilities.setCapability(FirefoxDriver.BINARY, new FirefoxBinary(file));
             }
         }
-
-        // If a required version is present, then set this as a desired capability.
-        // Only affects remote browsers
-        Optional<String> browserVersion = getBrowserVersion();
-        if (browserVersion.isPresent() && !browserVersion.get().isEmpty()) {
-            desiredCapabilities.setCapability(CapabilityType.VERSION, browserVersion.get());
-        }
-
-        LoggingPreferences loggingPreferences = getLoggingPreferences();
-        desiredCapabilities.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences);
 
         return desiredCapabilities;
     }

@@ -1,7 +1,7 @@
 package com.sayem.appium.pagefactory.framework.browser.web;
 
 import com.sayem.appium.pagefactory.framework.actions.SeleniumActions;
-import com.sayem.appium.pagefactory.framework.exception.WebDriverException;
+import com.sayem.appium.pagefactory.framework.exception.IWebDriverException;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -27,13 +27,13 @@ import java.util.logging.Level;
  * <p>Represents a RemoteBrowser, i.e. running a Browser on a Selenium Node controlled by a Selenium Hub.
  * To create an instance, pass in the "delegate" browser and the URL to the Selenium Hub.
  * Example Selenium Hub URL: http://hub.my.company.com:4444/wd/hub</p>
- *
+ * <p>
  * See <a href="http://code.google.com/p/selenium/wiki/Grid2">http://code.google.com/p/selenium/wiki/Grid2</a>
  */
 public class RemoteBrowser extends WebBrowser {
+    private static final Logger logger = LoggerFactory.getLogger(RemoteBrowser.class);
     protected WebBrowser delegate;
     protected String seleniumHubURL;
-    private static final Logger logger = LoggerFactory.getLogger(RemoteBrowser.class);
 
 
     public RemoteBrowser(WebBrowser delegate, String seleniumHubURL) {
@@ -44,7 +44,7 @@ public class RemoteBrowser extends WebBrowser {
                 delegate.getBrowserVersion(),
                 delegate.getBrowserLocale(),
                 delegate.getStartWindowWidth(),
-                delegate.getStartWindowHeight(), delegate.getBrowserLogLevel(), delegate.getBrowserLogFile());
+                delegate.getStartWindowHeight(), delegate.getBrowserLogLevel(), delegate.getBrowserLogFile(), delegate.getPlatform());
         this.delegate = delegate;
         this.seleniumHubURL = seleniumHubURL;
     }
@@ -60,7 +60,7 @@ public class RemoteBrowser extends WebBrowser {
     }
 
     @Override
-    protected WebDriver createWebDriver() throws WebDriverException {
+    protected WebDriver createWebDriver() throws IWebDriverException {
         try {
             RemoteWebDriver driver = new RemoteWebDriver(new URL(seleniumHubURL), delegate.getDesiredCapabilities());
             Level level = getLogLevel();
@@ -69,7 +69,7 @@ public class RemoteBrowser extends WebBrowser {
             // https://code.google.com/p/selenium/source/browse/java/client/src/org/openqa/selenium/remote/LocalFileDetector.java
             return driver;
         } catch (MalformedURLException e) {
-            throw new WebDriverException("Invalid Selenium Hub URL given: " + seleniumHubURL, e);
+            throw new IWebDriverException("Invalid Selenium Hub URL given: " + seleniumHubURL, e);
         }
     }
 

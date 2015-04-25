@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 
 import javax.annotation.Nullable;
 
-public interface Page{
+public interface Page {
 
     /**
      * Get the SeleniumActions for the current page and browser, for how to interact with the page using Selenium.

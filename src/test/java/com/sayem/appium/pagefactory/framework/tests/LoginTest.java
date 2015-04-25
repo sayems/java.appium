@@ -3,10 +3,7 @@ package com.sayem.appium.pagefactory.framework.tests;
 import com.sayem.appium.pagefactory.framework.browser.MobileBrowserBuilder;
 import com.sayem.appium.pagefactory.framework.browser.mobile.MobileBrowser;
 import com.sayem.appium.pagefactory.framework.config.TimeoutsConfig;
-import com.sayem.appium.pagefactory.framework.models.Android;
-import com.sayem.appium.pagefactory.framework.models.User;
 import com.sayem.appium.pagefactory.framework.pages.LoginPage;
-import io.appium.java_client.AppiumDriver;
 import org.testng.annotations.Test;
 
 public class LoginTest {

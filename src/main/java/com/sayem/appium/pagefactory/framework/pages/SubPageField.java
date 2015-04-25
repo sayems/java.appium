@@ -9,7 +9,6 @@ import java.lang.annotation.Target;
  * Marker interface indicating that a field that extends {@link SubPage}
  * should be loaded when the page is initialized.
  */
-
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface SubPageField {

@@ -1,11 +1,10 @@
 package com.sayem.appium.pagefactory.framework.browser;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.sayem.appium.pagefactory.framework.actions.SeleniumActions;
 import com.sayem.appium.pagefactory.framework.browser.web.WebBrowserType;
 import com.sayem.appium.pagefactory.framework.config.TimeoutsConfig;
-import com.sayem.appium.pagefactory.framework.exception.WebDriverException;
+import com.sayem.appium.pagefactory.framework.exception.IWebDriverException;
 import com.sayem.appium.pagefactory.framework.pages.PageUtils;
 import com.sayem.appium.pagefactory.framework.pages.SubPage;
 import com.sayem.appium.pagefactory.framework.pages.TopLevelPage;
@@ -21,14 +20,15 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Objects;
+import java.util.Optional;
 
 public abstract class Browser<D extends WebDriver> {
+    protected static final PageUtils PAGE_UTILS = new PageUtils();
     private static final Logger logger = LoggerFactory.getLogger(Browser.class);
     protected D webDriver;
     protected String baseTestUrl;
     protected TimeoutsConfig timeouts;
-    protected Optional<CachedPage> optionalCachedPage = Optional.absent();
-    protected static final PageUtils PAGE_UTILS = new PageUtils();
+    protected Optional<CachedPage> optionalCachedPage = Optional.empty();
 
     protected Browser(String baseTestUrl, TimeoutsConfig timeoutsConfig) {
         this.baseTestUrl = Preconditions.checkNotNull(baseTestUrl);
@@ -41,17 +41,21 @@ public abstract class Browser<D extends WebDriver> {
 
     public abstract DesiredCapabilities getDesiredCapabilities();
 
-    public abstract void initializeBrowser() throws WebDriverException;
+    public abstract void initializeBrowser() throws IWebDriverException;
 
     public String getBaseTestUrl() {
         return baseTestUrl;
+    }
+
+    public void setBaseTestUrl(String baseTestUrl) {
+        this.baseTestUrl = baseTestUrl;
     }
 
     public TimeoutsConfig getTimeouts() {
         return timeouts;
     }
 
-    protected abstract D createWebDriver() throws WebDriverException;
+    protected abstract D createWebDriver() throws IWebDriverException;
 
     public D getWebDriver() {
         return webDriver;
@@ -65,16 +69,21 @@ public abstract class Browser<D extends WebDriver> {
         return timeouts.getImplicitWaitTimeoutMillis();
     }
 
+    public Optional<CachedPage> getOptionalCachedPage() {
+        return optionalCachedPage;
+    }
+
     /**
      * Invalidate cached page, and return a fresh TopLevelPage with newly initialized WebElements.
-     *
+     * <p>
      * This method does not do a Browser Refresh of the page.
-     *
+     * <p>
      * It does:
      * Invalidate the cache.
      * Initialize the current page again by loading webelements and running page load hooks
      *
      * @param pageClass - the class of the current Page
+     * @return the new instance of a TopLevelPage
      */
     public <T extends TopLevelPage> T reloadTopLevelPage(Class<T> pageClass) {
         invalidateCachedPage();
@@ -94,7 +103,6 @@ public abstract class Browser<D extends WebDriver> {
      * If the current page is still valid, and the URL hasn't changed, and the
      * class given as input is assignable from the cached page,
      * THEN return the cached page and avoid re-initializing web elements and running page hooks.
-     * <p/>
      * Otherwise, invalidate the cache and load as normal.
      *
      * @param pageClass - the class of the current Page
@@ -109,8 +117,15 @@ public abstract class Browser<D extends WebDriver> {
         // If the page wasn't valid, then invalidate the cache.
         runLeavePageHook();
         invalidateCachedPage();
-        T page = PAGE_UTILS.loadCurrentPage(pageClass, webDriver, getActions());
+
+        // First load the page without the page load hook so that we can store the failing page in the cache
+        T page = PAGE_UTILS.loadCurrentPageWithoutPageLoadHook(pageClass, webDriver, getActions());
         setCachedPage(page);
+
+        // Next, run page load hook and sub-page load hooks
+        page.pageLoadHook();
+        PAGE_UTILS.runPageLoadHooksForSubPages(page, getActions());
+
         return page;
     }
 
@@ -137,12 +152,12 @@ public abstract class Browser<D extends WebDriver> {
     }
 
     public void invalidateCachedPage() {
-        optionalCachedPage = Optional.absent();
+        optionalCachedPage = Optional.empty();
     }
 
     //--------------Private helpers------------
     protected void setCachedPage(TopLevelPage p) {
-        if (getBrowserType()!=WebBrowserType.MOBILE) {
+        if (getBrowserType() != WebBrowserType.MOBILE) {
             final String url = webDriver.getCurrentUrl();
             CachedPage cachedPage = new CachedPage(url, p);
             optionalCachedPage = Optional.of(cachedPage);
@@ -200,6 +215,8 @@ public abstract class Browser<D extends WebDriver> {
     public abstract <T extends TopLevelPage> T refreshPage(Class<T> pageClass);
 
     public void quit() {
+        logger.info("Quitting WebDriver: {}", webDriver);
         webDriver.quit();
+        logger.info("SUCCESS - quit WebDriver: {}", webDriver);
     }
 }

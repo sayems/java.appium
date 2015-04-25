@@ -1,6 +1,6 @@
 package com.sayem.appium.pagefactory.framework.actions;
 
-import com.sayem.appium.pagefactory.framework.browser.web.ChromeBrowser;
+import com.sayem.appium.pagefactory.framework.browser.web.SafariBrowser;
 
 /**
  * Selenium Actions for Chrome Browser.
@@ -8,8 +8,8 @@ import com.sayem.appium.pagefactory.framework.browser.web.ChromeBrowser;
  * Currently, this is the same as BaseSeleniumActions, as we don't have any need to implement anything differently
  * for Chrome.
  */
-public class ChromeSeleniumActions extends BaseSeleniumActions<ChromeBrowser> {
-    public ChromeSeleniumActions(ChromeBrowser browser) {
+public class SafariSeleniumActions extends BaseSeleniumActions<SafariBrowser> {
+    public SafariSeleniumActions(SafariBrowser browser) {
         super(browser);
     }
 }

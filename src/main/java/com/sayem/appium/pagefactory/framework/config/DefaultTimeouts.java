@@ -1,10 +1,8 @@
 package com.sayem.appium.pagefactory.framework.config;
 
 /**
- *
  * Default timeout constants, only for use within this package.
  */
-
 interface DefaultTimeouts {
     public static final int CLICK_TIMEOUT_SECONDS = 5;
     public static final int PRESENCE_TIMEOUT_SECONDS = 5;

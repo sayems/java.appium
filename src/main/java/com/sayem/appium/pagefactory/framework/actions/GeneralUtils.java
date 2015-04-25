@@ -2,7 +2,7 @@ package com.sayem.appium.pagefactory.framework.actions;
 
 /**
  * General Utilities.
- *
+ * <p>
  * So far just trivial utilities for waiting.
  * Arbitrary waits are discouraged, but in some cases they are needed.
  */

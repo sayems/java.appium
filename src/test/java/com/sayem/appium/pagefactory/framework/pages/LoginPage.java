@@ -3,7 +3,7 @@ package com.sayem.appium.pagefactory.framework.pages;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
-public class LoginPage extends BaseTopLevelPage{
+public class LoginPage extends BaseTopLevelPage {
 
 
     @FindBy(id = "accountname")
@@ -17,7 +17,6 @@ public class LoginPage extends BaseTopLevelPage{
 
     @FindBy(id = "login_button")
     WebElement loginButton;
-
 
 
     public void login() throws InterruptedException {

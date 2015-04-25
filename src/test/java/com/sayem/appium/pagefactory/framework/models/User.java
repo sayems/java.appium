@@ -4,6 +4,7 @@ public class User {
 
     private String accountName;
     private String userName;
+    private String password;
 
     public String getAccountName() {
         return accountName;
@@ -28,6 +29,4 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    private String password;
 }

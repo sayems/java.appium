@@ -1,4 +1,4 @@
-package com.sayem.appium.pagefactory.framework.tests;
+package com.sayem.appium.pagefactory.framework.mobile.test;
 
 import com.sayem.appium.pagefactory.framework.browser.MobileBrowserBuilder;
 import com.sayem.appium.pagefactory.framework.browser.mobile.MobileBrowser;
